@@ -6,7 +6,6 @@
 package view;
 
 import javax.swing.table.DefaultTableModel;
-import model.Cliente;
 import model.Pais;
 import service.PaisService;
 
@@ -50,6 +49,8 @@ public class TelaPais extends javax.swing.JFrame {
         labelSigla = new javax.swing.JLabel();
         textFieldSigla = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,6 +103,16 @@ public class TelaPais extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Paises");
 
+        jMenu1.setText("Cliente");
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu1MouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(jMenu1);
+
+        jInternalFrame1.setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
         jInternalFrame1Layout.setHorizontalGroup(
@@ -143,7 +154,7 @@ public class TelaPais extends javax.swing.JFrame {
                 .addComponent(botaoCadastrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -179,6 +190,12 @@ public class TelaPais extends javax.swing.JFrame {
     private void textFieldSiglaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSiglaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_textFieldSiglaActionPerformed
+
+    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
+        // TODO add your handling code here:
+        new TelaCliente().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenu1MouseClicked
 
     private void limparCampos() {
         this.textFieldNome.setText("");
@@ -231,6 +248,8 @@ public class TelaPais extends javax.swing.JFrame {
     private javax.swing.JButton botaoCadastrar;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel labelNome;
     private javax.swing.JLabel labelSigla;
     private javax.swing.JScrollPane scrollTabela;

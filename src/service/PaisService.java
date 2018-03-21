@@ -19,7 +19,6 @@ public class PaisService {
     
     public void adicionarPais(Pais pais) {
         getListaPaises().add(pais);
-        System.out.println(this.listaPaises);
     }
     
     public List<Pais> getListaPaises() {

@@ -5,9 +5,12 @@
  */
 package view;
 
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Cliente;
+import model.Pais;
 import service.ClienteService;
+import service.PaisService;
 
 /**
  *
@@ -23,10 +26,18 @@ public class TelaCliente extends javax.swing.JFrame {
         initComponents();        
         modelo = new DefaultTableModel();        
         tabelaClientes.setModel(modelo); 
+        modelo.addColumn("Código");
         modelo.addColumn("Nome");
+        modelo.addColumn("Telefone");
+        modelo.addColumn("Idade");
+        modelo.addColumn("Limite");
+        modelo.addColumn("País");
+        popularComboPais();
     }
     
     ClienteService clienteService = new ClienteService();
+    PaisService paisService = new PaisService();
+    int contCodigoCliente = 1;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -52,6 +63,8 @@ public class TelaCliente extends javax.swing.JFrame {
         labelPais = new javax.swing.JLabel();
         comboPais = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -109,6 +122,16 @@ public class TelaCliente extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Clientes");
+
+        jMenu1.setText("País");
+        jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu1MouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(jMenu1);
+
+        jInternalFrame1.setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
         jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
@@ -172,7 +195,7 @@ public class TelaCliente extends javax.swing.JFrame {
                     .addComponent(textFieldLimiteCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                         .addComponent(botaoCadastrar)
                         .addGap(18, 18, 18))
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
@@ -206,9 +229,15 @@ public class TelaCliente extends javax.swing.JFrame {
     private void botaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCadastrarActionPerformed
         Cliente cliente = new Cliente();
         cliente.setNome(textFieldNome.getText());
+        cliente.setIdade(Integer.parseInt(textFieldIdade.getValue().toString()));
+        cliente.setCodigo(this.contCodigoCliente);
+        cliente.setLimiteCredito(Double.parseDouble(textFieldLimiteCredito.getValue().toString()));
+        cliente.setTelefone(textFieldTelefone.getText());
         clienteService.adicionarCliente(cliente);
         limparCampos();
         adicionarNaTabela(cliente);
+        
+        this.contCodigoCliente++;
         
     }//GEN-LAST:event_botaoCadastrarActionPerformed
 
@@ -216,13 +245,33 @@ public class TelaCliente extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_textFieldTelefoneActionPerformed
 
+    private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
+        // TODO add your handling code here:
+        new TelaPais().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jMenu1MouseClicked
+
+    
     private void limparCampos() {
         this.textFieldNome.setText("");
+        this.textFieldTelefone.setText("");
+        this.textFieldIdade.setValue("");
+        this.textFieldLimiteCredito.setValue("");
+    }
+    
+    private void popularComboPais() {
+        List<Pais> paises = paisService.getListaPaises();
+        for(Pais p : paises){
+            comboPais.addItem(p.getNome() + "-" + p.getSigla());
+        }
+        
     }
     
     private void adicionarNaTabela(Cliente cliente) {           
         
-        modelo.addRow(new Object[]{cliente.getNome()}); 
+        modelo.addRow(new Object[]{cliente.getCodigo(),cliente.getNome(),cliente.getTelefone(),
+                      cliente.getIdade(),cliente.getLimiteCredito(),cliente.getPais().getNome()+ "-" + 
+                      cliente.getPais().getSigla()}); 
     }
     
     /**
@@ -265,6 +314,8 @@ public class TelaCliente extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboPais;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel labelIdade;
     private javax.swing.JLabel labelLimiteCredito;
     private javax.swing.JLabel labelNome;
