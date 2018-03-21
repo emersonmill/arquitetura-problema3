@@ -279,6 +279,11 @@ public class TelaCliente extends javax.swing.JFrame {
             valid = false;
         }
         
+        if (cliente.getNome().length() <= 5) {
+            textAlert.setText(textAlert.getText() + "\nNome precisa ter mais que 05 caracteres");
+            valid = false;
+        }
+        
         for(Cliente cli: clientesCadastrados) {
             if (cli.getNome().equals(cliente.getNome())) {
                 textAlert.setText(textAlert.getText() + "\nNome já cadastrado no sistema");
@@ -286,14 +291,39 @@ public class TelaCliente extends javax.swing.JFrame {
             }
         }
         
+        if (cliente.getIdade() <= 18 && cliente.getLimiteCredito() > 100 
+                && !cliente.getPais().getNome().equals("Brasil")) {            
+            textAlert.setText(textAlert.getText() + "\nLimite excedido");
+            valid = false;
+        }else if (cliente.getIdade() <= 18 && cliente.getLimiteCredito() > 200) {            
+            textAlert.setText(textAlert.getText() + "\nLimite excedido");
+            valid = false;
+        }
+        
+        if ((cliente.getIdade() > 18 && cliente.getIdade() <= 35) && cliente.getLimiteCredito() > 300 
+                && !cliente.getPais().getNome().equals("Brasil")) {            
+            textAlert.setText(textAlert.getText() + "\nLimite excedido");
+            valid = false;
+        }else if ((cliente.getIdade() > 18 && cliente.getIdade() <= 35) && cliente.getLimiteCredito() > 400) {            
+            textAlert.setText(textAlert.getText() + "\nLimite excedido");
+            valid = false;
+        }
+        
+        if (cliente.getIdade() > 35 && cliente.getLimiteCredito() > 500 
+                && !cliente.getPais().getNome().equals("Brasil")) {            
+            textAlert.setText(textAlert.getText() + "\nLimite excedido");
+            valid = false;
+        }else if (cliente.getIdade() > 35 && cliente.getLimiteCredito() > 600) {            
+            textAlert.setText(textAlert.getText() + "\nLimite excedido");
+            valid = false;
+        }
         
         return valid;
         /*
 O telefone precisa ser validado de acordo com o país;
 O limite de crédito é dado automaticamente de acordo com a idade: Para clientes até 18 anos o limite é R$ 100,00. Entre 18 e 35 é R$ 300,00. Acima de 35 é R$ 500,00;
 Se o cliente morar no Brasil, ele terá um crédito adicional de R$ 100,00, independente da idade;
-Cada país deverá ser identificado pelo nome e abreviação;
-O nome do cliente não pode ser menor que 5 caracteres, e o campo país não pode ser nulo/vazio;
+
 */
 
     }
