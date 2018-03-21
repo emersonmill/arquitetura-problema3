@@ -5,6 +5,7 @@
  */
 package view;
 
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Pais;
 import service.PaisService;
@@ -26,10 +27,13 @@ public class TelaPais extends javax.swing.JFrame {
         modelo.addColumn("Código");
         modelo.addColumn("Nome");
         modelo.addColumn("Sigla");
+        paisesCadastrados = PaisService.getListaPaises();
     }
     
     PaisService paisService;
     int contCodigoPais = 1;
+    List<Pais> paisesCadastrados;
+    Pais pais;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +53,8 @@ public class TelaPais extends javax.swing.JFrame {
         labelSigla = new javax.swing.JLabel();
         textFieldSigla = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        textAlert = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
 
@@ -103,6 +109,11 @@ public class TelaPais extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Paises");
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setText("Alertas:");
+
+        textAlert.setEnabled(false);
+
         jMenu1.setText("Cliente");
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -138,6 +149,12 @@ public class TelaPais extends javax.swing.JFrame {
                 .addGap(159, 159, 159)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textAlert)
+                .addContainerGap())
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -152,9 +169,13 @@ public class TelaPais extends javax.swing.JFrame {
                     .addComponent(textFieldSigla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(13, 13, 13)
                 .addComponent(botaoCadastrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(textAlert, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(scrollTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -176,14 +197,17 @@ public class TelaPais extends javax.swing.JFrame {
     }//GEN-LAST:event_textFieldNomeActionPerformed
 
     private void botaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCadastrarActionPerformed
-        Pais pais = new Pais();
+        pais = new Pais();
         pais.setNome(textFieldNome.getText());
         pais.setSigla(textFieldSigla.getText());
         pais.setCodigo(this.contCodigoPais);
-        paisService.adicionarPais(pais);
-        limparCampos();
-        adicionarNaTabela(pais);
-        this.contCodigoPais++;
+        
+        if (verificaCampos()) {
+            paisService.adicionarPais(pais);
+            limparCampos();
+            adicionarNaTabela(pais);
+            this.contCodigoPais++;
+        }
         
     }//GEN-LAST:event_botaoCadastrarActionPerformed
 
@@ -201,6 +225,22 @@ public class TelaPais extends javax.swing.JFrame {
         this.textFieldSigla.setText("");
 
     }
+    
+     private boolean verificaCampos() {
+        
+        textAlert.setText("");
+        boolean valid = true;
+        
+    
+        for(Pais p: paisesCadastrados) {
+            if (pais.getNome().equals(p.getNome())) {
+                textAlert.setText(textAlert.getText() + "\nPais já cadastrado");
+                valid = false;
+            }
+        }
+        
+        return valid;
+     }
     
     private void adicionarNaTabela(Pais pais) {           
         
@@ -247,12 +287,14 @@ public class TelaPais extends javax.swing.JFrame {
     private javax.swing.JButton botaoCadastrar;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel labelNome;
     private javax.swing.JLabel labelSigla;
     private javax.swing.JScrollPane scrollTabela;
     private javax.swing.JTable tabelaClientes;
+    private javax.swing.JTextField textAlert;
     private javax.swing.JTextField textFieldNome;
     private javax.swing.JTextField textFieldSigla;
     // End of variables declaration//GEN-END:variables
