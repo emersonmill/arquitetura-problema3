@@ -1,0 +1,12 @@
+### NetBeans ###
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+build/classes/view/TelaCliente$1.class
+*.class
+*.class
+*.class
+build/classes/view/TelaCliente$2.class
