@@ -15,13 +15,13 @@ import model.Pais;
  */
 public class PaisService {
     
-    private List<Pais> listaPaises = new ArrayList<Pais>();
+    static List<Pais> listaPaises = new ArrayList<Pais>();
     
-    public void adicionarPais(Pais pais) {
+    public static void adicionarPais(Pais pais) {
         getListaPaises().add(pais);
     }
     
-    public List<Pais> getListaPaises() {
+    public static List<Pais> getListaPaises() {
         return listaPaises;
     }
     

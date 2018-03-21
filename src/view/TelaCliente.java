@@ -33,11 +33,14 @@ public class TelaCliente extends javax.swing.JFrame {
         modelo.addColumn("Limite");
         modelo.addColumn("País");
         popularComboPais();
+        clientesCadastrados = clienteService.getListaClientes();
+        popularTabela();
     }
     
-    ClienteService clienteService = new ClienteService();
-    PaisService paisService = new PaisService();
+    PaisService paisService;
+    ClienteService clienteService = new ClienteService();    
     int contCodigoCliente = 1;
+    List<Cliente> clientesCadastrados;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -63,10 +66,12 @@ public class TelaCliente extends javax.swing.JFrame {
         labelPais = new javax.swing.JLabel();
         comboPais = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jInternalFrame1.setVisible(true);
 
@@ -123,6 +128,11 @@ public class TelaCliente extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel1.setText("Clientes");
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setText("Alertas:");
+
+        jTextField1.setEnabled(false);
+
         jMenu1.setText("País");
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -145,6 +155,10 @@ public class TelaCliente extends javax.swing.JFrame {
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1))
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                 .addComponent(labelPais)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -193,17 +207,16 @@ public class TelaCliente extends javax.swing.JFrame {
                     .addComponent(textFieldIdade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelLimiteCredito)
                     .addComponent(textFieldLimiteCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
-                        .addComponent(botaoCadastrar)
-                        .addGap(18, 18, 18))
-                    .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labelPais)
-                            .addComponent(comboPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelPais)
+                    .addComponent(comboPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(botaoCadastrar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(17, 17, 17)
                 .addComponent(scrollTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -236,7 +249,7 @@ public class TelaCliente extends javax.swing.JFrame {
         clienteService.adicionarCliente(cliente);
         limparCampos();
         adicionarNaTabela(cliente);
-        
+        clientesCadastrados = clienteService.getListaClientes();
         this.contCodigoCliente++;
         
     }//GEN-LAST:event_botaoCadastrarActionPerformed
@@ -247,10 +260,23 @@ public class TelaCliente extends javax.swing.JFrame {
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
         // TODO add your handling code here:
-        new TelaPais().setVisible(true);
-        this.dispose();
+        new TelaPais().setVisible(true);        
     }//GEN-LAST:event_jMenu1MouseClicked
 
+    private void verificaCampos() {
+        
+        
+        
+        /*Não é permitido mais de um cliente com o mesmo nome;
+Não é permitido mais de um país com o mesmo nome;
+O telefone precisa ser validado de acordo com o país;
+O limite de crédito é dado automaticamente de acordo com a idade: Para clientes até 18 anos o limite é R$ 100,00. Entre 18 e 35 é R$ 300,00. Acima de 35 é R$ 500,00;
+Se o cliente morar no Brasil, ele terá um crédito adicional de R$ 100,00, independente da idade;
+Cada país deverá ser identificado pelo nome e abreviação;
+O nome do cliente não pode ser menor que 5 caracteres, e o campo país não pode ser nulo/vazio;
+*/
+
+    }
     
     private void limparCampos() {
         this.textFieldNome.setText("");
@@ -272,6 +298,14 @@ public class TelaCliente extends javax.swing.JFrame {
         modelo.addRow(new Object[]{cliente.getCodigo(),cliente.getNome(),cliente.getTelefone(),
                       cliente.getIdade(),cliente.getLimiteCredito(),cliente.getPais().getNome()+ "-" + 
                       cliente.getPais().getSigla()}); 
+    }
+    
+    public void popularTabela() {
+        for(Cliente cliente : clientesCadastrados) {
+        modelo.addRow(new Object[]{cliente.getCodigo(),cliente.getNome(),cliente.getTelefone(),
+                      cliente.getIdade(),cliente.getLimiteCredito(),cliente.getPais().getNome()+ "-" + 
+                      cliente.getPais().getSigla()});
+        }
     }
     
     /**
@@ -314,8 +348,10 @@ public class TelaCliente extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> comboPais;
     private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel labelIdade;
     private javax.swing.JLabel labelLimiteCredito;
     private javax.swing.JLabel labelNome;

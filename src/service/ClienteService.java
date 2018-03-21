@@ -15,7 +15,7 @@ import model.Cliente;
  */
 public class ClienteService {
     
-    private List<Cliente> listaClientes = new ArrayList<Cliente>();
+    private static List<Cliente> listaClientes = new ArrayList<Cliente>();
     
     public void adicionarCliente(Cliente cliente) {
         getListaClientes().add(cliente);
