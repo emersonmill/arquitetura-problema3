@@ -319,12 +319,7 @@ public class TelaCliente extends javax.swing.JFrame {
         }
         
         return valid;
-        /*
-O telefone precisa ser validado de acordo com o país;
-O limite de crédito é dado automaticamente de acordo com a idade: Para clientes até 18 anos o limite é R$ 100,00. Entre 18 e 35 é R$ 300,00. Acima de 35 é R$ 500,00;
-Se o cliente morar no Brasil, ele terá um crédito adicional de R$ 100,00, independente da idade;
-
-*/
+       
 
     }
     
