@@ -5,13 +5,9 @@
  */
 package model;
 
-/**
- *
- * @author emerson
- */
+import java.util.Objects;
+
 public class Cliente {
-    
-    private int codigo;
     
     private String nome;
     
@@ -27,78 +23,92 @@ public class Cliente {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setNome(String nome) throws Exception {
+        if (nome.length() >= 5)
+            this.nome = nome;
+        
+        else
+            throw new Exception("Nome deve ter 5 ou mais caracteres");
     }
 
-    /**
-     * @return the codigo
-     */
-    public int getCodigo() {
-        return codigo;
-    }
-
-    /**
-     * @param codigo the codigo to set
-     */
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
-    }
-
-    /**
-     * @return the telefone
-     */
     public String getTelefone() {
         return telefone;
     }
-
-    /**
-     * @param telefone the telefone to set
-     */
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    
+    public void setTelefone(String telefone) throws Exception {
+        
+        if (this.getPais() == null) {
+            throw new Exception("País selecionado é inválido");
+        }
+        
+        if (telefone.length() != this.getPais().getDigitos())
+            throw new Exception ("O telefone não é valido. Deve ter "+this.getPais().getDigitos()+" dígitos");
+            
+        else
+            this.telefone = telefone;
     }
 
-    /**
-     * @return the limiteCredito
-     */
     public double getLimiteCredito() {
         return limiteCredito;
     }
-
-    /**
-     * @param limiteCredito the limiteCredito to set
-     */
-    public void setLimiteCredito(double limiteCredito) {
-        this.limiteCredito = limiteCredito;
+    
+    public void setLimiteCredito(double limiteCredito) throws Exception {
+         if (this.getIdade() > 35)
+            this.limiteCredito = 500;
+        
+        else if (this.getIdade() > 18)
+            this.limiteCredito = 300;
+        
+        else
+            this.limiteCredito = 100;
+        
+        if (this.getPais().getSigla().equalsIgnoreCase("BR"))
+            this.limiteCredito += 100;
     }
 
-    /**
-     * @return the pais
-     */
     public Pais getPais() {
         return pais;
     }
 
-    /**
-     * @param pais the pais to set
-     */
-    public void setPais(Pais pais) {
-        this.pais = pais;
+    public void setPais(Pais pais) throws Exception {
+         if (pais == null)
+            throw new Exception ("País inválido!");
+        
+        else
+            this.pais = pais;
     }
 
-    /**
-     * @return the idade
-     */
     public int getIdade() {
         return idade;
     }
-
-    /**
-     * @param idade the idade to set
-     */
+    
     public void setIdade(int idade) {
         this.idade = idade;
+    }
+    
+     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.nome);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cliente other = (Cliente) obj;
+        if (!Objects.equals(this.nome, other.nome)) {
+            return false;
+        }
+        return true;
     }
     
     

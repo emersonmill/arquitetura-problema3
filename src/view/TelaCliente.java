@@ -5,12 +5,15 @@
  */
 package view;
 
-import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Cliente;
 import model.Pais;
-import service.ClienteService;
-import service.PaisService;
+import dao.ClienteDAO;
+import dao.PaisDAO;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,27 +24,32 @@ public class TelaCliente extends javax.swing.JFrame {
     /**
      * Creates new form TelaCliente
      */
+    private PaisDAO paisDAO;
+    private ClienteDAO clienteDAO;
+    Set<Cliente> clientesCadastrados;
     DefaultTableModel modelo = null;
-    public TelaCliente() {
-        initComponents();        
+    Cliente cliente;
+    
+    public TelaCliente(PaisDAO paisDAO, ClienteDAO clienteDAO) {
+        this.paisDAO = paisDAO;
+        this.clienteDAO = clienteDAO;
+        initComponents();    
+        activate();
+    }
+    
+    private void activate() {
         modelo = new DefaultTableModel();        
         tabelaClientes.setModel(modelo); 
-        modelo.addColumn("Código");
         modelo.addColumn("Nome");
         modelo.addColumn("Telefone");
         modelo.addColumn("Idade");
         modelo.addColumn("Limite");
         modelo.addColumn("País");
+        clientesCadastrados = clienteDAO.getListaClientes();
         popularComboPais();
-        clientesCadastrados = clienteService.getListaClientes();
         popularTabela();
     }
     
-    PaisService paisService;
-    ClienteService clienteService = new ClienteService();    
-    int contCodigoCliente = 1;
-    List<Cliente> clientesCadastrados;
-    Cliente cliente;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,8 +70,6 @@ public class TelaCliente extends javax.swing.JFrame {
         textFieldTelefone = new javax.swing.JTextField();
         labelIdade = new javax.swing.JLabel();
         textFieldIdade = new javax.swing.JSpinner();
-        textFieldLimiteCredito = new javax.swing.JSpinner();
-        labelLimiteCredito = new javax.swing.JLabel();
         labelPais = new javax.swing.JLabel();
         comboPais = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
@@ -85,7 +91,9 @@ public class TelaCliente extends javax.swing.JFrame {
             }
         });
 
-        botaoCadastrar.setText("Cadastrar");
+        botaoCadastrar.setBackground(new java.awt.Color(0, 51, 204));
+        botaoCadastrar.setForeground(new java.awt.Color(255, 255, 255));
+        botaoCadastrar.setText("Salvar");
         botaoCadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botaoCadastrarActionPerformed(evt);
@@ -123,8 +131,6 @@ public class TelaCliente extends javax.swing.JFrame {
 
         labelIdade.setText("Idade:");
 
-        labelLimiteCredito.setText("Limite Crédito:");
-
         labelPais.setText("Pais:");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
@@ -135,14 +141,16 @@ public class TelaCliente extends javax.swing.JFrame {
 
         textAlert.setEnabled(false);
 
-        jButton1.setText("Cadastrar pais");
+        jButton1.setBackground(new java.awt.Color(0, 0, 204));
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Cadastrar país");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jMenu1.setText("País");
+        jMenu1.setText("Tela inicial");
         jMenu1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jMenu1MouseClicked(evt);
@@ -161,19 +169,18 @@ public class TelaCliente extends javax.swing.JFrame {
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(scrollTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jInternalFrame1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(botaoCadastrar))
                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                         .addGap(27, 27, 27)
                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(textAlert))
-                            .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                                .addComponent(labelPais)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(comboPais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(18, 18, 18)
-                                .addComponent(botaoCadastrar))
+                                .addComponent(textAlert))
                             .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jInternalFrame1Layout.createSequentialGroup()
@@ -186,9 +193,9 @@ public class TelaCliente extends javax.swing.JFrame {
                                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                         .addComponent(textFieldIdade, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(labelLimiteCredito)
+                                        .addComponent(labelPais)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(textFieldLimiteCredito))
+                                        .addComponent(comboPais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                     .addGroup(jInternalFrame1Layout.createSequentialGroup()
                                         .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                             .addComponent(jLabel1)
@@ -198,10 +205,6 @@ public class TelaCliente extends javax.swing.JFrame {
                                         .addGap(27, 27, 27)
                                         .addComponent(textFieldTelefone, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))))))
                 .addContainerGap())
-            .addGroup(jInternalFrame1Layout.createSequentialGroup()
-                .addGap(105, 105, 105)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,22 +221,19 @@ public class TelaCliente extends javax.swing.JFrame {
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelIdade)
                     .addComponent(textFieldIdade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labelLimiteCredito)
-                    .addComponent(textFieldLimiteCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelPais)
-                    .addComponent(comboPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(botaoCadastrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                    .addComponent(comboPais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(textAlert, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(botaoCadastrar)
+                    .addComponent(jButton1))
                 .addGap(18, 18, 18)
-                .addComponent(scrollTabela, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textAlert, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrollTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -258,21 +258,55 @@ public class TelaCliente extends javax.swing.JFrame {
 
     private void botaoCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botaoCadastrarActionPerformed
         cliente = new Cliente();
-        cliente.setNome(textFieldNome.getText());
-        cliente.setIdade(Integer.parseInt(textFieldIdade.getValue().toString()));
-        cliente.setCodigo(this.contCodigoCliente);
-        cliente.setLimiteCredito(Double.parseDouble(textFieldLimiteCredito.getValue().toString()));
-        cliente.setTelefone(textFieldTelefone.getText());
-        List<Pais> paises = paisService.getListaPaises();
-        cliente.setPais(paises.get(comboPais.getSelectedIndex()));
+        textAlert.setText("");
         
-        if (verificaCampos()) {
-            clienteService.adicionarCliente(cliente);
-            limparCampos();
-            adicionarNaTabela(cliente);
-            clientesCadastrados = clienteService.getListaClientes();
-            this.contCodigoCliente++;
+        try {
+            cliente.setNome(textFieldNome.getText());
+        } catch (Exception ex) {
+             textAlert.setText(textAlert.getText() + ex.getMessage());
+             return;
         }
+        
+        Set<Pais> paises = paisDAO.getListaPaises();
+        
+         for (Pais paisAtual : paisDAO.getListaPaises()) {
+            if (paisAtual.getNome().equalsIgnoreCase((String) comboPais.getSelectedItem())) {
+                try {
+                    cliente.setPais(paisAtual);
+                } catch (Exception ex) {
+                    textAlert.setText(textAlert.getText() + ex.getMessage());
+                    return;
+                }
+            }
+        }
+  
+        try {
+            cliente.setTelefone(textFieldTelefone.getText());
+        } catch (Exception ex) {
+            textAlert.setText(textAlert.getText() + ex.getMessage());
+            return;
+        }
+        
+        cliente.setIdade(Integer.parseInt(textFieldIdade.getValue().toString()));
+        try {
+            cliente.setLimiteCredito(0);
+        } catch (Exception ex) {
+            System.out.println("aqui");
+            textAlert.setText(textAlert.getText() + ex.getMessage());
+            return;
+        }
+        
+        try {
+            clienteDAO.adicionarCliente(cliente);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Cliente já cadastrado");
+            return;
+        }
+        limparCampos();
+        adicionarNaTabela(cliente);
+        clientesCadastrados = clienteDAO.getListaClientes();
+
+
         
     }//GEN-LAST:event_botaoCadastrarActionPerformed
 
@@ -282,12 +316,11 @@ public class TelaCliente extends javax.swing.JFrame {
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
         // TODO add your handling code here:
-        new TelaPais().setVisible(true);   
         this.dispose();
     }//GEN-LAST:event_jMenu1MouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new TelaPais().setVisible(true);   
+        new TelaPais(paisDAO).setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -304,13 +337,6 @@ public class TelaCliente extends javax.swing.JFrame {
         if (cliente.getNome().length() <= 5) {
             textAlert.setText(textAlert.getText() + "\nNome precisa ter mais que 05 caracteres");
             valid = false;
-        }
-        
-        for(Cliente cli: clientesCadastrados) {
-            if (cli.getNome().equals(cliente.getNome())) {
-                textAlert.setText(textAlert.getText() + "\nNome já cadastrado no sistema");
-                valid = false;
-            }
         }
         
         if (cliente.getIdade() <= 18 && cliente.getLimiteCredito() > 100 
@@ -348,65 +374,32 @@ public class TelaCliente extends javax.swing.JFrame {
     private void limparCampos() {
         this.textFieldNome.setText("");
         this.textFieldTelefone.setText("");
+        this.textFieldIdade.setValue(0);
     }
     
     private void popularComboPais() {
-        List<Pais> paises = paisService.getListaPaises();
+        Set<Pais> paises = paisDAO.getListaPaises();
         for(Pais p : paises){
-            comboPais.addItem(p.getNome() + "-" + p.getSigla());
+            comboPais.addItem(p.getNome());
         }
         
     }
     
     private void adicionarNaTabela(Cliente cliente) {           
         
-        modelo.addRow(new Object[]{cliente.getCodigo(),cliente.getNome(),cliente.getTelefone(),
+        modelo.addRow(new Object[]{cliente.getNome(),cliente.getTelefone(),
                       cliente.getIdade(),cliente.getLimiteCredito(),cliente.getPais().getNome()+ "-" + 
                       cliente.getPais().getSigla()}); 
     }
     
     public void popularTabela() {
         for(Cliente cliente : clientesCadastrados) {
-        modelo.addRow(new Object[]{cliente.getCodigo(),cliente.getNome(),cliente.getTelefone(),
+        modelo.addRow(new Object[]{cliente.getNome(),cliente.getTelefone(),
                       cliente.getIdade(),cliente.getLimiteCredito(),cliente.getPais().getNome()+ "-" + 
                       cliente.getPais().getSigla()});
         }
     }
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaCliente().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoCadastrar;
@@ -418,7 +411,6 @@ public class TelaCliente extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JLabel labelIdade;
-    private javax.swing.JLabel labelLimiteCredito;
     private javax.swing.JLabel labelNome;
     private javax.swing.JLabel labelPais;
     private javax.swing.JLabel labelTelefone;
@@ -426,7 +418,6 @@ public class TelaCliente extends javax.swing.JFrame {
     private javax.swing.JTable tabelaClientes;
     private javax.swing.JTextField textAlert;
     private javax.swing.JSpinner textFieldIdade;
-    private javax.swing.JSpinner textFieldLimiteCredito;
     private javax.swing.JTextField textFieldNome;
     private javax.swing.JTextField textFieldTelefone;
     // End of variables declaration//GEN-END:variables

@@ -5,55 +5,64 @@
  */
 package model;
 
+import java.util.Objects;
+
 public class Pais {
-    
-    private int codigo;
     
     private String nome;
     
     private String sigla;
-
-    /**
-     * @return the codigo
-     */
-    public int getCodigo() {
-        return codigo;
-    }
-
-    /**
-     * @param codigo the codigo to set
-     */
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
-    }
-
-    /**
-     * @return the nome
-     */
+    
+    private int digitos;
+    
     public String getNome() {
         return nome;
     }
 
-    /**
-     * @param nome the nome to set
-     */
     public void setNome(String nome) {
         this.nome = nome;
     }
 
-    /**
-     * @return the sigla
-     */
     public String getSigla() {
         return sigla;
     }
 
-    /**
-     * @param sigla the sigla to set
-     */
     public void setSigla(String sigla) {
         this.sigla = sigla;
     }
-    
-    
+   
+     public int getDigitos() {
+        return digitos;
+    }
+
+    public void setDigitos(int digitos) {
+        this.digitos = digitos;
+    }
+
+   
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + Objects.hashCode(this.nome);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pais other = (Pais) obj;
+        if (!Objects.equals(this.nome, other.nome)) {
+            return false;
+        }
+        return true;
+    }
+ 
 }
