@@ -9,6 +9,8 @@ import java.util.Objects;
 
 public class Cliente {
     
+    private int id;
+    
     private String nome;
     
     private String telefone;
@@ -18,6 +20,19 @@ public class Cliente {
     private Pais pais;
     
     private int idade;
+
+    public Cliente() {
+        
+    }
+    
+    public Cliente(int id, String nome, String telefone, double limiteCredito, int idade, Pais pais) {
+       this.id = id;
+       this.nome = nome;
+       this.telefone = telefone;
+       this.limiteCredito = limiteCredito;
+       this.idade = idade;
+       this.pais = pais;
+    }
     
     public String getNome() {
         return nome;
@@ -109,6 +124,20 @@ public class Cliente {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return the id
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(int id) {
+        this.id = id;
     }
     
     

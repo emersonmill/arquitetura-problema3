@@ -6,6 +6,7 @@
 package view;
 
 import dao.ClienteDAO;
+import dao.Entidades;
 import dao.PaisDAO;
 
 
@@ -18,6 +19,7 @@ public class TelaInicial extends javax.swing.JFrame {
         initComponents();
         paisDAO = new PaisDAO();
         clienteDAO = new ClienteDAO();
+        new Entidades();
     }
 
     /**

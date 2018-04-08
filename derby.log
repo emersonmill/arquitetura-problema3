@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Sun Apr 08 10:31:43 BRT 2018:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-0162-a574-918f-0000008ee0d0 
+on database directory C:\Users\vinic\Desktop\UTFPR\arquitetura software\Trabalhos\arquitetura-problema3\clientes with class loader sun.misc.Launcher$AppClassLoader@1909752 
+Loaded from file:/C:/Users/vinic/Desktop/UTFPR/arquitetura%20software/Trabalhos/arquitetura-problema4/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_161-b12
+user.dir=C:\Users\vinic\Desktop\UTFPR\arquitetura software\Trabalhos\arquitetura-problema3
+os.name=Windows 10
+os.arch=x86
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

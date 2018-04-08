@@ -45,7 +45,7 @@ public class TelaCliente extends javax.swing.JFrame {
         modelo.addColumn("Idade");
         modelo.addColumn("Limite");
         modelo.addColumn("País");
-        clientesCadastrados = clienteDAO.getListaClientes();
+        clientesCadastrados = clienteDAO.listar();
         popularComboPais();
         popularTabela();
     }
@@ -304,7 +304,7 @@ public class TelaCliente extends javax.swing.JFrame {
         }
         limparCampos();
         adicionarNaTabela(cliente);
-        clientesCadastrados = clienteDAO.getListaClientes();
+        clientesCadastrados = clienteDAO.listar();
 
 
         

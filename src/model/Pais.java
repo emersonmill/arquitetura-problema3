@@ -9,11 +9,33 @@ import java.util.Objects;
 
 public class Pais {
     
+    private int id;
+    
     private String nome;
     
     private String sigla;
     
     private int digitos;
+
+    public Pais(Integer id, String nome, String sigla, int digitos) {
+        this.id = id;
+        this.nome = nome;
+        this.sigla = sigla;
+        this.digitos = digitos;
+    }
+    
+    public Pais() {
+        
+    }
+    
+    
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
     
     public String getNome() {
         return nome;
@@ -38,7 +60,6 @@ public class Pais {
     public void setDigitos(int digitos) {
         this.digitos = digitos;
     }
-
    
     @Override
     public int hashCode() {
