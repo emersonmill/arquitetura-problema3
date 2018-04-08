@@ -8,6 +8,7 @@ package view;
 import javax.swing.table.DefaultTableModel;
 import model.Pais;
 import dao.PaisDAO;
+import java.util.Iterator;
 import java.util.Set;
 import javax.swing.JOptionPane;
 
@@ -17,30 +18,29 @@ import javax.swing.JOptionPane;
  */
 public class TelaPais extends javax.swing.JFrame {
 
-  
     private PaisDAO paisDAO;
     DefaultTableModel modelo = null;
     Set<Pais> paisesCadastrados;
     Pais pais;
-    
+
     public TelaPais(PaisDAO paisDAO) {
         this.paisDAO = paisDAO;
-        initComponents();        
+        initComponents();
         activate();
     }
-    
+
     private void activate() {
-        modelo = new DefaultTableModel();        
-        tabelaClientes.setModel(modelo); 
+        modelo = new DefaultTableModel();
+        tabelaPais.setModel(modelo);
+        modelo.addColumn("Id");
         modelo.addColumn("Nome");
         modelo.addColumn("Sigla");
         modelo.addColumn("Digitos");
-        paisesCadastrados = paisDAO.getListaPaises();
         popularTabela();
+        btnEditar.setEnabled(false);
+        btnExcluir.setEnabled(false);
     }
-    
 
-  
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -50,7 +50,7 @@ public class TelaPais extends javax.swing.JFrame {
         textFieldNome = new javax.swing.JTextField();
         botaoCadastrar = new javax.swing.JButton();
         scrollTabela = new javax.swing.JScrollPane();
-        tabelaClientes = new javax.swing.JTable();
+        tabelaPais = new javax.swing.JTable();
         labelSigla = new javax.swing.JLabel();
         textFieldSigla = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -83,7 +83,7 @@ public class TelaPais extends javax.swing.JFrame {
             }
         });
 
-        tabelaClientes.setModel(new javax.swing.table.DefaultTableModel(
+        tabelaPais.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -102,7 +102,12 @@ public class TelaPais extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        scrollTabela.setViewportView(tabelaClientes);
+        tabelaPais.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaPaisMouseClicked(evt);
+            }
+        });
+        scrollTabela.setViewportView(tabelaPais);
 
         labelSigla.setText("Sigla:");
 
@@ -119,6 +124,11 @@ public class TelaPais extends javax.swing.JFrame {
 
         btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/deletar.png"))); // NOI18N
         btnExcluir.setToolTipText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/alterar1.png"))); // NOI18N
         btnEditar.setToolTipText("Alterar");
@@ -232,7 +242,7 @@ public class TelaPais extends javax.swing.JFrame {
         pais.setNome(textFieldNome.getText());
         pais.setSigla(textFieldSigla.getText());
         pais.setDigitos(Integer.parseInt(textFieldDigitos.getValue().toString()));
-        
+
         try {
             paisDAO.adicionarPais(pais);
         } catch (Exception ex) {
@@ -241,8 +251,8 @@ public class TelaPais extends javax.swing.JFrame {
         }
         limparCampos();
         adicionarNaTabela(pais);
-        
-        
+
+
     }//GEN-LAST:event_botaoCadastrarActionPerformed
 
     private void textFieldSiglaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textFieldSiglaActionPerformed
@@ -250,26 +260,53 @@ public class TelaPais extends javax.swing.JFrame {
     }//GEN-LAST:event_textFieldSiglaActionPerformed
 
     private void jMenu1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu1MouseClicked
-       this.dispose();
+        this.dispose();
     }//GEN-LAST:event_jMenu1MouseClicked
+
+    private void tabelaPaisMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaPaisMouseClicked
+        btnEditar.setEnabled(true);
+        btnExcluir.setEnabled(true);
+    }//GEN-LAST:event_tabelaPaisMouseClicked
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        if (tabelaPais.getSelectedRow() != -1) {
+            int i = 0;
+            for (Pais p : paisesCadastrados) {
+                if (i == tabelaPais.getSelectedRow()) {
+                    paisDAO.excluir(p);
+                    popularTabela();
+                    return;
+                }
+                i++;
+            }
+
+        }
+
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void limparCampos() {
         this.textFieldNome.setText("");
         this.textFieldSigla.setText("");
 
     }
-    
-    private void adicionarNaTabela(Pais pais) {           
-        
-        modelo.addRow(new Object[]{pais.getNome(), pais.getSigla(), pais.getDigitos()}); 
-    }
-    
-    private void popularTabela() {
-        for(Pais pais : paisesCadastrados) {
+
+    private void adicionarNaTabela(Pais pais) {
+
         modelo.addRow(new Object[]{pais.getNome(), pais.getSigla(), pais.getDigitos()});
+    }
+
+    private void popularTabela() {
+        paisesCadastrados = paisDAO.getListaPaises();
+        int rowCount = modelo.getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) {
+            modelo.removeRow(i);
+        }
+        
+        for (Pais pais : paisesCadastrados) {
+            modelo.addRow(new Object[]{pais.getId(), pais.getNome(), pais.getSigla(), pais.getDigitos()});
         }
     }
-    
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoCadastrar;
@@ -284,7 +321,7 @@ public class TelaPais extends javax.swing.JFrame {
     private javax.swing.JLabel labelNome;
     private javax.swing.JLabel labelSigla;
     private javax.swing.JScrollPane scrollTabela;
-    private javax.swing.JTable tabelaClientes;
+    private javax.swing.JTable tabelaPais;
     private javax.swing.JSpinner textFieldDigitos;
     private javax.swing.JTextField textFieldNome;
     private javax.swing.JTextField textFieldSigla;
