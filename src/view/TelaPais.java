@@ -275,6 +275,8 @@ public class TelaPais extends javax.swing.JFrame {
                 if (i == tabelaPais.getSelectedRow()) {
                     paisDAO.excluir(p);
                     popularTabela();
+                    btnEditar.setEnabled(false);
+                    btnExcluir.setEnabled(false);
                     return;
                 }
                 i++;

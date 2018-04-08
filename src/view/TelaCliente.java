@@ -11,8 +11,6 @@ import model.Pais;
 import dao.ClienteDAO;
 import dao.PaisDAO;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -45,9 +43,10 @@ public class TelaCliente extends javax.swing.JFrame {
         modelo.addColumn("Idade");
         modelo.addColumn("Limite");
         modelo.addColumn("País");
-        clientesCadastrados = clienteDAO.listar();
         popularComboPais();
         popularTabela();
+        btnEditar.setEnabled(false);
+        btnExcluir.setEnabled(false);
     }
     
 
@@ -76,6 +75,8 @@ public class TelaCliente extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         textAlert = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        btnEditar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
 
@@ -119,6 +120,11 @@ public class TelaCliente extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        tabelaClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaClientesMouseClicked(evt);
+            }
+        });
         scrollTabela.setViewportView(tabelaClientes);
 
         labelTelefone.setText("Telefone:");
@@ -147,6 +153,17 @@ public class TelaCliente extends javax.swing.JFrame {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/alterar1.png"))); // NOI18N
+        btnEditar.setToolTipText("Alterar");
+
+        btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icones/deletar.png"))); // NOI18N
+        btnExcluir.setToolTipText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
             }
         });
 
@@ -205,6 +222,12 @@ public class TelaCliente extends javax.swing.JFrame {
                                         .addGap(27, 27, 27)
                                         .addComponent(textFieldTelefone, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)))))))
                 .addContainerGap())
+            .addGroup(jInternalFrame1Layout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addComponent(btnEditar, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(76, 76, 76)
+                .addComponent(btnExcluir)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jInternalFrame1Layout.setVerticalGroup(
             jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,7 +256,11 @@ public class TelaCliente extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrollTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnEditar)
+                    .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -324,6 +351,28 @@ public class TelaCliente extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        if (tabelaClientes.getSelectedRow() != -1) {
+            int i = 0;
+            for (Cliente c : clientesCadastrados) {
+                if (i == tabelaClientes.getSelectedRow()) {
+                    clienteDAO.excluir(c);
+                    popularTabela();
+                    btnEditar.setEnabled(false);
+                    btnExcluir.setEnabled(false);
+                    return;
+                }
+                i++;
+            }
+
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void tabelaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClientesMouseClicked
+       btnEditar.setEnabled(true);
+        btnExcluir.setEnabled(true);
+    }//GEN-LAST:event_tabelaClientesMouseClicked
+
     private boolean verificaCampos() {
         
         textAlert.setText("");
@@ -393,8 +442,15 @@ public class TelaCliente extends javax.swing.JFrame {
     }
     
     public void popularTabela() {
+        clientesCadastrados = clienteDAO.listar();
+        
+        int rowCount = modelo.getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) {
+            modelo.removeRow(i);
+        }
+        
         for(Cliente cliente : clientesCadastrados) {
-        modelo.addRow(new Object[]{cliente.getNome(),cliente.getTelefone(),
+        modelo.addRow(new Object[]{cliente.getId(), cliente.getNome(),cliente.getTelefone(),
                       cliente.getIdade(),cliente.getLimiteCredito(),cliente.getPais().getNome()+ "-" + 
                       cliente.getPais().getSigla()});
         }
@@ -403,6 +459,8 @@ public class TelaCliente extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botaoCadastrar;
+    private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnExcluir;
     private javax.swing.JComboBox<String> comboPais;
     private javax.swing.JButton jButton1;
     private javax.swing.JInternalFrame jInternalFrame1;

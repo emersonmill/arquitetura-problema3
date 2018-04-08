@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
+import javax.swing.JOptionPane;
 import model.Cliente;
 import model.Pais;
 
@@ -25,7 +26,7 @@ public class ClienteDAO {
     private Statement stm;
 
     public void adicionarCliente(Cliente cliente) throws Exception {
-        String QUERY = "INSERT INTO cliente VALUES (DEFAULT,'" + cliente.getNome() + "','" + cliente.getTelefone()+ "'," + cliente.getLimiteCredito()+ "," + cliente.getIdade()+ "," + cliente.getPais().getId()+ ")";
+        String QUERY = "INSERT INTO cliente VALUES (DEFAULT,'" + cliente.getNome() + "','" + cliente.getTelefone() + "'," + cliente.getLimiteCredito() + "," + cliente.getIdade() + "," + cliente.getPais().getId() + ")";
 
         try {
             con = Conexao.criarConexao();
@@ -78,6 +79,25 @@ public class ClienteDAO {
         }
 
         return lista;
+    }
+
+    public void excluir(Cliente cliente) {
+
+        String QUERY = "DELETE FROM cliente WHERE id = " + cliente.getId();
+
+        try {
+
+            con = Conexao.criarConexao();
+            stm = con.createStatement();
+            stm.executeUpdate(QUERY);
+
+        } catch (SQLException e) {
+
+            JOptionPane.showMessageDialog(null, e.getMessage());
+
+        } finally {
+            this.fecha(rs, stm, con);
+        }
     }
 
     public void fecha(ResultSet rs, Statement stm, Connection con) {
